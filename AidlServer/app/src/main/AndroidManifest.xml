@@ -16,6 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="messsage.binli.com.aidlserver.GuideServer">
+            <intent-filter>
+                <action android:name="com.ecarx.membercenter.action.GUIDE"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
