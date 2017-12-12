@@ -17,17 +17,15 @@ import android.widget.Toast;
 import messsage.binli.com.aidlserver.IGuideAidlInterface;
 import messsage.binli.com.aidlserver.IGuideListener;
 
-public class MainActivity extends AppCompatActivity {
+public class SecondActivity extends AppCompatActivity {
     private TextView tv_style;
     private EditText et_accotun;
     private EditText et_password;
     private Button btn_login;
     private Button btn_logout;
-    private Button btn_next;
 
     private IGuideAidlInterface iGuideAidlInterface;
     boolean isConnect;
-
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
@@ -54,13 +52,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_second);
+
         tv_style = findViewById(R.id.tv_style);
         et_accotun = findViewById(R.id.et_accotun);
         et_password = findViewById(R.id.et_password);
         btn_login = findViewById(R.id.btn_login);
         btn_logout = findViewById(R.id.btn_logout);
-        btn_next = findViewById(R.id.btn_next);
 
         Intent intent = new Intent();
         intent.setAction("com.ecarx.membercenter.action.GUIDE");
@@ -95,25 +93,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this,SecondActivity.class));
-            }
-        });
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        try {
-            iGuideAidlInterface.unregisterListener(iGuideListener);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        unbindService(serviceConnection);
     }
 
     private IGuideListener iGuideListener = new IGuideListener.Stub() {
@@ -126,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-            Toast.makeText(MainActivity.this,"客户端登录成功回调====" + msg,Toast.LENGTH_LONG).show();
+            Toast.makeText(SecondActivity.this,"客户端登录成功回调====" + msg,Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -135,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     tv_style.setText("当前状态：\n连接成功\n"+msg);
-                    Toast.makeText(MainActivity.this,"客户端登录失败回调====" + msg,Toast.LENGTH_LONG).show();
+                    Toast.makeText(SecondActivity.this,"客户端登录失败回调====" + msg,Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -146,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     tv_style.setText("当前状态：\n连接成功\n"+msg);
-                    Toast.makeText(MainActivity.this,"客户端登出成功回调====" + msg,Toast.LENGTH_LONG).show();
+                    Toast.makeText(SecondActivity.this,"客户端登出成功回调====" + msg,Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -157,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     tv_style.setText("当前状态：\n连接成功\n"+msg);
-                    Toast.makeText(MainActivity.this,"客户端登出失败回调====" + msg,Toast.LENGTH_LONG).show();
+                    Toast.makeText(SecondActivity.this,"客户端登出失败回调====" + msg,Toast.LENGTH_LONG).show();
                 }
             });
         }

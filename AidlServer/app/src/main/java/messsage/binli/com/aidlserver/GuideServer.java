@@ -3,6 +3,7 @@ package messsage.binli.com.aidlserver;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
@@ -12,6 +13,8 @@ import android.support.annotation.Nullable;
 
 public class GuideServer extends Service{
     private IGuideListener iGuideListener;
+
+    private RemoteCallbackList<IGuideListener> mRemoteCallbackList = new RemoteCallbackList<>();
 
     private IGuideAidlInterface.Stub mBinder = new IGuideAidlInterface.Stub() {
         @Override
@@ -24,9 +27,11 @@ public class GuideServer extends Service{
                         Thread.sleep(2000);
 
                         if (userName.equals("binli") && passWord.equals("123456")) {
-                            iGuideListener.onLogoutSuccess("登录成功: "+userName);
+                            loginSuccessCallback("登录成功: "+userName);
+                            //iGuideListener.onLogoutSuccess();
                         } else {
-                            iGuideListener.onLoginFail("登录失败: "+userName);
+                            loginFailCallback("登录失败: "+userName);
+                            //iGuideListener.onLoginFail("登录失败: "+userName);
                         }
 
                     } catch (InterruptedException e) {
@@ -50,10 +55,11 @@ public class GuideServer extends Service{
                         Thread.sleep(2000);
 
                         if(packageName.equals("messsage.binli.com.aidlclient")){
-                            iGuideListener.onLogoutSuccess("登出成功！");
+                            logoutSuccessCallback("登出成功！");
+                            //iGuideListener.onLogoutSuccess("登出成功！");
                         }else{
-                            iGuideListener.onLogoutSuccess("登出失败！");
-
+                            logoutFailCallback("登出失败！");
+                            //iGuideListener.onLogoutSuccess("登出失败！");
                         }
 
 
@@ -76,14 +82,14 @@ public class GuideServer extends Service{
         @Override
         public void registerListener(IGuideListener listener) throws RemoteException {
             if (listener != null) {
-                iGuideListener = listener;
+                mRemoteCallbackList.register(listener);
             }
         }
 
         @Override
         public void unregisterListener(IGuideListener listener) throws RemoteException {
             if (listener != null) {
-                iGuideListener = null;
+                mRemoteCallbackList.unregister(listener);
             }
         }
     };
@@ -103,6 +109,70 @@ public class GuideServer extends Service{
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    private void loginSuccessCallback(String msg) throws RemoteException{
+        final int N = mRemoteCallbackList.beginBroadcast();
+        for(int i = 0 ;i < N; i++){
+            IGuideListener broadcastItem = mRemoteCallbackList.getBroadcastItem(i);
+            if(broadcastItem != null){
+                try{
+                    broadcastItem.onLogoutSuccess(msg);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+            mRemoteCallbackList.finishBroadcast();
+        }
+    }
+
+    private void loginFailCallback(String msg) throws RemoteException{
+        final int N = mRemoteCallbackList.beginBroadcast();
+        for(int i = 0 ;i < N; i++){
+            IGuideListener broadcastItem = mRemoteCallbackList.getBroadcastItem(i);
+            if(broadcastItem != null){
+                try{
+                    broadcastItem.onLogoutSuccess(msg);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        mRemoteCallbackList.finishBroadcast();
+    }
+
+    private void logoutSuccessCallback(String msg) throws RemoteException{
+        final int N = mRemoteCallbackList.beginBroadcast();
+        for(int i = 0 ;i < N; i++){
+            IGuideListener broadcastItem = mRemoteCallbackList.getBroadcastItem(i);
+            if(broadcastItem != null){
+                try{
+                    broadcastItem.onLogoutSuccess(msg);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+            mRemoteCallbackList.finishBroadcast();
+        }
+    }
+
+    private void logoutFailCallback(String msg) throws RemoteException{
+        final int N = mRemoteCallbackList.beginBroadcast();
+        for(int i = 0 ;i < N; i++){
+            IGuideListener broadcastItem = mRemoteCallbackList.getBroadcastItem(i);
+            if(broadcastItem != null){
+                try{
+                    broadcastItem.onLogoutFail(msg);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+            mRemoteCallbackList.finishBroadcast();
+        }
     }
 
 }

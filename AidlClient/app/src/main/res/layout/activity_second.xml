@@ -33,10 +33,4 @@
         android:text="登出"
         android:layout_width="100dp"
         android:layout_height="50dp" />
-
-    <Button
-        android:id="@+id/btn_next"
-        android:text="下一页"
-        android:layout_width="100dp"
-        android:layout_height="50dp" />
 </LinearLayout>
